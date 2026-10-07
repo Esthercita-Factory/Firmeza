@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Firmeza.Application/Firmeza.Application.csproj" />
+    <Project Path="src/Firmeza.Domain/Firmeza.Domain.csproj" />
+    <Project Path="src/Firmeza.Infrastructure/Firmeza.Infrastructure.csproj" />
+    <Project Path="src/Firmeza.Web/Firmeza.Web.csproj" />
+  </Folder>
+</Solution>
