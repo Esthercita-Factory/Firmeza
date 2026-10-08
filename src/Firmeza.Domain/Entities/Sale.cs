@@ -12,6 +12,8 @@ public class Sale : Entity
 
     public Money Total { get; private set; }
 
+    public ICollection<SaleDetail> SaleDetails { get; private set; } = new List<SaleDetail>();
+
     private Sale()
     {
     }

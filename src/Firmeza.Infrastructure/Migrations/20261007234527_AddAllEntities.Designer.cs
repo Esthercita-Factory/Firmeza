@@ -3,6 +3,7 @@ using System;
 using Firmeza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Firmeza.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261007234527_AddAllEntities")]
+    partial class AddAllEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,13 +58,6 @@ namespace Firmeza.Infrastructure.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Document")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Clients_Document");
-
-                    b.HasIndex("Email")
-                        .HasDatabaseName("IX_Clients_Email");
 
                     b.HasIndex("EnterpriseId");
 
@@ -108,13 +104,6 @@ namespace Firmeza.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .HasDatabaseName("IX_Enterprises_Email");
-
-                    b.HasIndex("TaxId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Enterprises_TaxId");
 
                     b.ToTable("Enterprises");
                 });

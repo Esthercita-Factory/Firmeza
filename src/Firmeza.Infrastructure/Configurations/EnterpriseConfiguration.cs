@@ -5,50 +5,53 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Firmeza.Infrastructure.Configurations;
 
-public class CustomerConfiguration : IEntityTypeConfiguration<Client>
+public class EnterpriseConfiguration : IEntityTypeConfiguration<Enterprise>
 {
-    public void Configure(EntityTypeBuilder<Client> builder)
+    public void Configure(EntityTypeBuilder<Enterprise> builder)
     {
-        builder.HasKey(c => c.Id);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(c => c.Name)
+        builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(150);
 
-        builder.Property(c => c.Age)
+        builder.Property(e => e.TradeName)
+            .IsRequired()
+            .HasMaxLength(150);
+
+        builder.Property(e => e.Type)
             .IsRequired();
 
-        builder.Property(c => c.Phone)
+        builder.Property(e => e.Address)
+            .IsRequired()
+            .HasMaxLength(250);
+
+        builder.Property(e => e.Phone)
             .HasConversion(
                 phone => phone.Value,
                 value => PhoneNumber.Create(value))
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.Property(c => c.Email)
+        builder.Property(e => e.Email)
             .HasConversion(
                 email => email.Value,
                 value => Email.Create(value))
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(c => c.Document)
+        builder.Property(e => e.TaxId)
             .HasConversion(
-                doc => doc.Value,
+                taxId => taxId.Value,
                 value => DocumentNumber.Create(value))
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.HasOne(c => c.Enterprise)
-            .WithMany()
-            .HasForeignKey(c => c.EnterpriseId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        builder.HasIndex(c => c.Document)
+        builder.HasIndex(e => e.TaxId)
             .IsUnique()
-            .HasDatabaseName("IX_Clients_Document");
+            .HasDatabaseName("IX_Enterprises_TaxId");
 
-        builder.HasIndex(c => c.Email)
-            .HasDatabaseName("IX_Clients_Email");
+        builder.HasIndex(e => e.Email)
+            .HasDatabaseName("IX_Enterprises_Email");
     }
 }
