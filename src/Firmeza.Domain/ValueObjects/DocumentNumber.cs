@@ -1,14 +1,7 @@
 namespace Firmeza.Domain.ValueObjects;
 
-public sealed class DocumentNumber
+public sealed record DocumentNumber(string Value)
 {
-    public string Value { get; }
-
-    private DocumentNumber(string value)
-    {
-        Value = value;
-    }
-
     public static DocumentNumber Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
