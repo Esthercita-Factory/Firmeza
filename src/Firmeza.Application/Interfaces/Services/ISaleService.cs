@@ -1,6 +1,6 @@
 using Firmeza.Application.DTOs.Sales;
 
-namespace Firmeza.Application.Interfaces;
+namespace Firmeza.Application.Interfaces.Services;
 
 public interface ISaleService
 {

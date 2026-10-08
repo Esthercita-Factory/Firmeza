@@ -1,6 +1,6 @@
 using Firmeza.Application.DTOs.Products;
 
-namespace Firmeza.Application.Interfaces;
+namespace Firmeza.Application.Interfaces.Services;
 
 public interface IProductService
 {

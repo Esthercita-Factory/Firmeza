@@ -1,4 +1,4 @@
-using Firmeza.Application.Interfaces;
+using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Domain.Entities;
 using Firmeza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
