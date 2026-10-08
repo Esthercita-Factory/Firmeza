@@ -11,6 +11,10 @@ public class EnterpriseConfiguration : IEntityTypeConfiguration<Enterprise>
     {
         builder.HasKey(e => e.Id);
 
+        builder.Property(e => e.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(150);
@@ -43,7 +47,7 @@ public class EnterpriseConfiguration : IEntityTypeConfiguration<Enterprise>
         builder.Property(e => e.TaxId)
             .HasConversion(
                 taxId => taxId.Value,
-                value => DocumentNumber.Create(value))
+                value => TaxId.Create(value))
             .IsRequired()
             .HasMaxLength(20);
 

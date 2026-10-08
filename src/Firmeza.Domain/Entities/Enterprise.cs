@@ -13,7 +13,7 @@ public class Enterprise : Entity
 
     public PhoneNumber Phone { get; private set; }
     public Email Email { get; private set; }
-    public DocumentNumber TaxId { get; private set; }
+    public TaxId TaxId { get; private set; }
 
     private Enterprise()
     {
@@ -44,6 +44,6 @@ public class Enterprise : Entity
 
         Phone = PhoneNumber.Create(phoneNumber);
         Email = Email.Create(email);
-        TaxId = DocumentNumber.Create(taxId);
+        TaxId = TaxId.Create(taxId);
     }
 }

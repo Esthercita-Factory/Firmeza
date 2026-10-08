@@ -1,14 +1,7 @@
 namespace Firmeza.Domain.ValueObjects;
 
-public sealed class Email
+public sealed record Email(string Value)
 {
-    public string Value { get; }
-
-    private Email(string value)
-    {
-        Value = value;
-    }
-
     public static Email Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

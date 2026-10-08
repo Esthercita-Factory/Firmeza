@@ -1,14 +1,7 @@
 namespace Firmeza.Domain.ValueObjects;
 
-public sealed class Money
+public sealed record Money(decimal Amount)
 {
-    public decimal Amount { get; }
-
-    private Money(decimal amount)
-    {
-        Amount = amount;
-    }
-
     public static Money Create(decimal amount)
     {
         if (amount < 0)

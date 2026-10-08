@@ -11,6 +11,10 @@ public class SaleDetailConfiguration : IEntityTypeConfiguration<SaleDetail>
     {
         builder.HasKey(sd => sd.Id);
 
+        builder.Property(sd => sd.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
         builder.Property(sd => sd.ProductId)
             .IsRequired();
 

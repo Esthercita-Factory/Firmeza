@@ -16,12 +16,15 @@ public class EnterpriseRepository : IEnterpriseRepository
 
     public async Task<IEnumerable<Enterprise>> GetAllAsync()
     {
-        return await _context.Enterprises.ToListAsync();
+        return await _context.Enterprises
+            .Where(e => e.IsActive)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Enterprise>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.Enterprises
+            .Where(e => e.IsActive)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -29,7 +32,9 @@ public class EnterpriseRepository : IEnterpriseRepository
 
     public async Task<Enterprise?> GetByIdAsync(Guid id)
     {
-        return await _context.Enterprises.FindAsync(id);
+        return await _context.Enterprises
+            .Where(e => e.IsActive)
+            .FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task AddAsync(Enterprise enterprise)
@@ -68,9 +73,7 @@ public class EnterpriseRepository : IEnterpriseRepository
         if (enterprise == null)
             throw new InvalidOperationException("Empresa no encontrada.");
 
-        // Implementación de borrado lógico si se agrega propiedad IsDeleted
-        // Por ahora, eliminación física
-        _context.Enterprises.Remove(enterprise);
+        enterprise.Deactivate();
         await _context.SaveChangesAsync();
     }
 }

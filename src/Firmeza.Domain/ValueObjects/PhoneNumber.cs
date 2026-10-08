@@ -1,14 +1,7 @@
 namespace Firmeza.Domain.ValueObjects;
 
-public sealed class PhoneNumber
+public sealed record PhoneNumber(string Value)
 {
-    public string Value { get; }
-
-    private PhoneNumber(string value)
-    {
-        Value = value;
-    }
-
     public static PhoneNumber Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

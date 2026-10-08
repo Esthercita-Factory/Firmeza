@@ -17,6 +17,7 @@ public class SaleDetailRepository : ISaleDetailRepository
     public async Task<IEnumerable<SaleDetail>> GetAllAsync()
     {
         return await _context.SaleDetails
+            .Where(sd => sd.IsActive)
             .Include(sd => sd.Product)
             .Include(sd => sd.Sale)
             .ToListAsync();
@@ -25,6 +26,7 @@ public class SaleDetailRepository : ISaleDetailRepository
     public async Task<IEnumerable<SaleDetail>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.SaleDetails
+            .Where(sd => sd.IsActive)
             .Include(sd => sd.Product)
             .Include(sd => sd.Sale)
             .Skip((pageNumber - 1) * pageSize)
@@ -35,6 +37,7 @@ public class SaleDetailRepository : ISaleDetailRepository
     public async Task<SaleDetail?> GetByIdAsync(Guid id)
     {
         return await _context.SaleDetails
+            .Where(sd => sd.IsActive)
             .Include(sd => sd.Product)
             .Include(sd => sd.Sale)
             .FirstOrDefaultAsync(sd => sd.Id == id);
@@ -88,9 +91,7 @@ public class SaleDetailRepository : ISaleDetailRepository
         if (saleDetail == null)
             throw new InvalidOperationException("Detalle de venta no encontrado.");
 
-        // Implementación de borrado lógico si se agrega propiedad IsDeleted
-        // Por ahora, eliminación física
-        _context.SaleDetails.Remove(saleDetail);
+        saleDetail.Deactivate();
         await _context.SaveChangesAsync();
     }
 }

@@ -17,6 +17,7 @@ public class ClientRepository : IClientRepository
     public async Task<IEnumerable<Client>> GetAllAsync()
     {
         return await _context.Clients
+            .Where(c => c.IsActive)
             .Include(c => c.Enterprise)
             .ToListAsync();
     }
@@ -24,6 +25,7 @@ public class ClientRepository : IClientRepository
     public async Task<IEnumerable<Client>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.Clients
+            .Where(c => c.IsActive)
             .Include(c => c.Enterprise)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -33,6 +35,7 @@ public class ClientRepository : IClientRepository
     public async Task<Client?> GetByIdAsync(Guid id)
     {
         return await _context.Clients
+            .Where(c => c.IsActive)
             .Include(c => c.Enterprise)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
@@ -73,9 +76,7 @@ public class ClientRepository : IClientRepository
         if (client == null)
             throw new InvalidOperationException("Cliente no encontrado.");
 
-        // Implementación de borrado lógico si se agrega propiedad IsDeleted
-        // Por ahora, eliminación física
-        _context.Clients.Remove(client);
+        client.Deactivate();
         await _context.SaveChangesAsync();
     }
 }

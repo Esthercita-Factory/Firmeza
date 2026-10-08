@@ -11,6 +11,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Client>
     {
         builder.HasKey(c => c.Id);
 
+        builder.Property(c => c.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
         builder.Property(c => c.Name)
             .IsRequired()
             .HasMaxLength(150);

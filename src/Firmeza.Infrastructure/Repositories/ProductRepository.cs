@@ -16,12 +16,15 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products
+            .Where(p => p.IsActive)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Product>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.Products
+            .Where(p => p.IsActive)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -29,7 +32,9 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
-        return await _context.Products.FindAsync(id);
+        return await _context.Products
+            .Where(p => p.IsActive)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task AddAsync(Product product)
@@ -56,9 +61,7 @@ public class ProductRepository : IProductRepository
         if (product == null)
             throw new InvalidOperationException("Producto no encontrado.");
 
-        // Implementación de borrado lógico si se agrega propiedad IsDeleted
-        // Por ahora, eliminación física
-        _context.Products.Remove(product);
+        product.Deactivate();
         await _context.SaveChangesAsync();
     }
 }
