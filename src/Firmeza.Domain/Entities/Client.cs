@@ -1,44 +1,68 @@
 using Firmeza.Domain.Common;
-using Firmeza.Domain.ValueObjects;
 
 namespace Firmeza.Domain.Entities;
 
 public class Client : Entity
 {
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     public int Age { get; private set; }
+    public string Phone { get; private set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
+    public string Document { get; private set; } = string.Empty;
+    public Guid EnterpriseId { get; private set; }
 
-    public PhoneNumber Phone { get; private set; }
-    public Email Email { get; private set; }
-    public DocumentNumber Document { get; private set; }
+    protected Client() { }
 
-    public Guid? EnterpriseId { get; private set; }
-    public Enterprise? Enterprise { get; private set; }
-
-    private Client()
+    public Client(string name, int age, string phone, string email, string document, Guid enterpriseId)
     {
+        Validate(name, age, phone, email, document, enterpriseId);
+
+        Name = name.Trim();
+        Age = age;
+        Phone = phone.Trim();
+        Email = email.Trim();
+        Document = document.Trim();
+        EnterpriseId = enterpriseId;
     }
 
-    public Client(
-        string name,
-        int age,
-        string phoneNumber,
-        string email,
-        string document)
+    public void Update(string name, int age, string phone, string email, string document, Guid enterpriseId)
+    {
+        Validate(name, age, phone, email, document, enterpriseId);
+
+        Name = name.Trim();
+        Age = age;
+        Phone = phone.Trim();
+        Email = email.Trim();
+        Document = document.Trim();
+        EnterpriseId = enterpriseId;
+    }
+
+    private static void Validate(string name, int age, string phone, string email, string document, Guid enterpriseId)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException(
-                "El nombre es obligatorio.");
+            throw new ArgumentException("El nombre del cliente es obligatorio.");
 
-        if (age < 18 || age > 120)
-            throw new ArgumentException(
-                "La edad debe estar entre 18 y 120 años.");
+        if (age < 0 || age > 150)
+            throw new ArgumentException("La edad debe estar entre 0 y 150 años.");
 
-        Name = name;
-        Age = age;
+        if (string.IsNullOrWhiteSpace(phone))
+            throw new ArgumentException("El teléfono es obligatorio.");
 
-        Phone = PhoneNumber.Create(phoneNumber);
-        Email = Email.Create(email);
-        Document = DocumentNumber.Create(document);
+        var trimmedPhone = phone.Trim();
+        if (trimmedPhone.Length < 7 || trimmedPhone.Length > 50)
+            throw new ArgumentException("El teléfono debe tener entre 7 y 50 caracteres.");
+
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@') || !email.Contains('.'))
+            throw new ArgumentException("El formato del correo electrónico no es válido.");
+
+        if (string.IsNullOrWhiteSpace(document))
+            throw new ArgumentException("El documento de identidad es obligatorio.");
+
+        var trimmedDoc = document.Trim();
+        if (trimmedDoc.Length < 5 || trimmedDoc.Length > 50)
+            throw new ArgumentException("El documento debe tener entre 5 y 50 caracteres.");
+
+        if (enterpriseId == Guid.Empty)
+            throw new ArgumentException("La empresa asociada es obligatoria.");
     }
 }

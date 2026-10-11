@@ -1,6 +1,6 @@
 namespace Firmeza.Application.DTOs.Enterprises;
 
-public class EnterpriseDto
+public class EnterpriseResponseDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -10,4 +10,5 @@ public class EnterpriseDto
     public string Phone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string TaxId { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }

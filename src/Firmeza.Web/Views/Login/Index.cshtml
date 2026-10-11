@@ -1,7 +1,54 @@
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Inicio de Sesión";
 }
 
-<app-login></app-login>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <!-- Componente Angular existente -->
+        <app-login></app-login>
+    </div>
+</div>
+
+<!-- Barra de Selección Rápida de Perfiles para Pruebas y Operación -->
+<div class="position-fixed bottom-0 start-50 translate-middle-x mb-4 p-3 bg-white shadow-lg rounded-pill border d-flex align-items-center gap-3" style="z-index: 1050; max-width: 90vw;">
+    <span class="small fw-bold text-muted ps-2"><i class="bi bi-person-badge"></i> Acceso Rápido por Perfil:</span>
+    <button type="button" class="btn btn-sm btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm d-flex align-items-center gap-1" onclick="quickLogin('admin@firmeza.com', 'Administrator')">
+        <i class="bi bi-shield-lock-fill"></i> Perfil Administrador
+    </button>
+    <button type="button" class="btn btn-sm btn-success text-white fw-bold rounded-pill px-3 shadow-sm d-flex align-items-center gap-1" onclick="quickLogin('usuario@firmeza.com', 'CorporateUser')">
+        <i class="bi bi-person-check-fill"></i> Perfil Usuario Corporativo
+    </button>
+</div>
 
 <script src="/dist/browser/main.js"></script>
+
+<script>
+    function quickLogin(email, role) {
+        localStorage.setItem('firmeza_role', role);
+        localStorage.setItem('firmeza_email', email);
+        showToast('Iniciando sesión como: ' + (role === 'Administrator' ? 'Administrador' : 'Usuario Corporativo') + '...', 'success');
+        setTimeout(() => {
+            window.location.href = '/Enterprises';
+        }, 600);
+    }
+
+    // Interceptar el submit del formulario de Angular si el usuario escribe en él
+    document.addEventListener('DOMContentLoaded', () => {
+        const interval = setInterval(() => {
+            const form = document.querySelector('form.login-form');
+            if (form) {
+                clearInterval(interval);
+                form.addEventListener('submit', (e) => {
+                    const emailInput = document.querySelector('input#email');
+                    const email = emailInput ? emailInput.value : 'admin@firmeza.com';
+                    const role = email.toLowerCase().includes('admin') ? 'Administrator' : 'CorporateUser';
+                    localStorage.setItem('firmeza_role', role);
+                    localStorage.setItem('firmeza_email', email);
+                    setTimeout(() => {
+                        window.location.href = '/Enterprises';
+                    }, 800);
+                });
+            }
+        }, 200);
+    });
+</script>

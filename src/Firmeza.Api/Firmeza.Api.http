@@ -1,0 +1,108 @@
+@Firmeza.Api_HostAddress = http://localhost:5134
+
+### 1. Iniciar sesión y obtener token JWT (Administrador)
+# @name login
+POST {{Firmeza.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@firmeza.com",
+  "password": "adminSecretPassword123"
+}
+
+### Guardar token obtenido para las peticiones siguientes
+@token = {{login.response.body.token}}
+
+### 2. Consultar colección paginada de Empresas (Requiere Bearer Token)
+GET {{Firmeza.Api_HostAddress}}/api/enterprises?pageNumber=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 3. Registrar una nueva Empresa
+# @name createEnterprise
+POST {{Firmeza.Api_HostAddress}}/api/enterprises
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Corporación Firmeza S.A.S.",
+  "tradeName": "Firmeza Soluciones",
+  "type": 2,
+  "address": "Av. Empresarial # 100-24, Piso 5",
+  "phone": "+57 (601) 789-0123",
+  "email": "contacto@firmeza.com",
+  "taxId": "901555888-1"
+}
+
+### 4. Consultar Empresa individual por Id
+@enterpriseId = {{createEnterprise.response.body.id}}
+GET {{Firmeza.Api_HostAddress}}/api/enterprises/{{enterpriseId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 5. Actualizar Empresa existente
+PUT {{Firmeza.Api_HostAddress}}/api/enterprises/{{enterpriseId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Corporación Firmeza Global S.A.S.",
+  "tradeName": "Firmeza Global",
+  "type": 2,
+  "address": "Av. Empresarial # 100-24, Piso 10",
+  "phone": "+57 (601) 789-9999",
+  "email": "contacto@firmeza.com",
+  "taxId": "901555888-1"
+}
+
+### 6. Suspender / Baja lógica de Empresa (IsActive = false)
+DELETE {{Firmeza.Api_HostAddress}}/api/enterprises/{{enterpriseId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### -----------------------------------------------------------
+
+### 7. Consultar colección paginada de Clientes (Requiere Bearer Token)
+GET {{Firmeza.Api_HostAddress}}/api/clients?pageNumber=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 8. Registrar un nuevo Cliente asociado a la Empresa
+# @name createClient
+POST {{Firmeza.Api_HostAddress}}/api/clients
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Carlos Alberto Restrepo",
+  "age": 34,
+  "phone": "+57 310 456 7890",
+  "email": "carlos.restrepo@empresa.com",
+  "document": "1020304050",
+  "enterpriseId": "{{enterpriseId}}"
+}
+
+### 9. Consultar Cliente individual por Id
+@clientId = {{createClient.response.body.id}}
+GET {{Firmeza.Api_HostAddress}}/api/clients/{{clientId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 10. Actualizar Cliente existente
+PUT {{Firmeza.Api_HostAddress}}/api/clients/{{clientId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Carlos Alberto Restrepo Gómez",
+  "age": 35,
+  "phone": "+57 310 999 8877",
+  "email": "carlos.restrepo@empresa.com",
+  "document": "1020304050",
+  "enterpriseId": "{{enterpriseId}}"
+}
+
+### 11. Suspender / Baja lógica de Cliente (IsActive = false)
+DELETE {{Firmeza.Api_HostAddress}}/api/clients/{{clientId}}
+Authorization: Bearer {{token}}
+Accept: application/json

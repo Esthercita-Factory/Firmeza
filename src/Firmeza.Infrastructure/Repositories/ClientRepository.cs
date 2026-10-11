@@ -17,66 +17,85 @@ public class ClientRepository : IClientRepository
     public async Task<IEnumerable<Client>> GetAllAsync()
     {
         return await _context.Clients
-            .Where(c => c.IsActive)
-            .Include(c => c.Enterprise)
+            .OrderBy(c => c.Name)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Client>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.Clients
-            .Where(c => c.IsActive)
-            .Include(c => c.Enterprise)
+            .OrderBy(c => c.Name)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
     }
 
+    public async Task<(IEnumerable<Client> Items, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize, bool? onlyActive = null)
+    {
+        var query = _context.Clients.AsQueryable();
+
+        if (onlyActive.HasValue)
+        {
+            query = query.Where(c => c.IsActive == onlyActive.Value);
+        }
+
+        var totalRecords = await query.CountAsync();
+        var items = await query
+            .OrderBy(c => c.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalRecords);
+    }
+
     public async Task<Client?> GetByIdAsync(Guid id)
     {
         return await _context.Clients
-            .Where(c => c.IsActive)
-            .Include(c => c.Enterprise)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task AddAsync(Client client)
     {
-        var existingClient = await _context.Clients
-            .FirstOrDefaultAsync(c => c.Document.Value == client.Document.Value);
-
-        if (existingClient != null)
-            throw new InvalidOperationException("Ya existe un cliente con este documento.");
-
         await _context.Clients.AddAsync(client);
         await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Client client)
     {
-        var existingClient = await _context.Clients
-            .FirstOrDefaultAsync(c => c.Id == client.Id);
-
-        if (existingClient == null)
-            throw new InvalidOperationException("Cliente no encontrado.");
-
-        var duplicateDocument = await _context.Clients
-            .FirstOrDefaultAsync(c => c.Document.Value == client.Document.Value && c.Id != client.Id);
-
-        if (duplicateDocument != null)
-            throw new InvalidOperationException("Ya existe otro cliente con este documento.");
-
-        _context.Entry(existingClient).CurrentValues.SetValues(client);
+        _context.Clients.Update(client);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteLogicalAsync(Guid id)
     {
-        var client = await _context.Clients.FindAsync(id);
+        var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == id);
         if (client == null)
-            throw new InvalidOperationException("Cliente no encontrado.");
+            throw new KeyNotFoundException($"Cliente con Id '{id}' no encontrado.");
 
         client.Deactivate();
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email, Guid? excludeId = null)
+    {
+        var query = _context.Clients.Where(c => c.Email == email);
+        if (excludeId.HasValue)
+        {
+            query = query.Where(c => c.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
+    public async Task<bool> ExistsByDocumentAsync(string document, Guid? excludeId = null)
+    {
+        var query = _context.Clients.Where(c => c.Document == document);
+        if (excludeId.HasValue)
+        {
+            query = query.Where(c => c.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync();
     }
 }

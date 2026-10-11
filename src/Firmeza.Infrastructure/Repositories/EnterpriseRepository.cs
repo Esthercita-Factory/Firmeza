@@ -17,63 +17,85 @@ public class EnterpriseRepository : IEnterpriseRepository
     public async Task<IEnumerable<Enterprise>> GetAllAsync()
     {
         return await _context.Enterprises
-            .Where(e => e.IsActive)
+            .OrderBy(e => e.Name)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Enterprise>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.Enterprises
-            .Where(e => e.IsActive)
+            .OrderBy(e => e.Name)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
     }
 
+    public async Task<(IEnumerable<Enterprise> Items, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize, bool? onlyActive = null)
+    {
+        var query = _context.Enterprises.AsQueryable();
+
+        if (onlyActive.HasValue)
+        {
+            query = query.Where(e => e.IsActive == onlyActive.Value);
+        }
+
+        var totalRecords = await query.CountAsync();
+        var items = await query
+            .OrderBy(e => e.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalRecords);
+    }
+
     public async Task<Enterprise?> GetByIdAsync(Guid id)
     {
         return await _context.Enterprises
-            .Where(e => e.IsActive)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task AddAsync(Enterprise enterprise)
     {
-        var existingEnterprise = await _context.Enterprises
-            .FirstOrDefaultAsync(e => e.TaxId.Value == enterprise.TaxId.Value);
-
-        if (existingEnterprise != null)
-            throw new InvalidOperationException("Ya existe una empresa con este RUC/TaxId.");
-
         await _context.Enterprises.AddAsync(enterprise);
         await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Enterprise enterprise)
     {
-        var existingEnterprise = await _context.Enterprises
-            .FirstOrDefaultAsync(e => e.Id == enterprise.Id);
-
-        if (existingEnterprise == null)
-            throw new InvalidOperationException("Empresa no encontrada.");
-
-        var duplicateTaxId = await _context.Enterprises
-            .FirstOrDefaultAsync(e => e.TaxId.Value == enterprise.TaxId.Value && e.Id != enterprise.Id);
-
-        if (duplicateTaxId != null)
-            throw new InvalidOperationException("Ya existe otra empresa con este RUC/TaxId.");
-
-        _context.Entry(existingEnterprise).CurrentValues.SetValues(enterprise);
+        _context.Enterprises.Update(enterprise);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteLogicalAsync(Guid id)
     {
-        var enterprise = await _context.Enterprises.FindAsync(id);
+        var enterprise = await _context.Enterprises.FirstOrDefaultAsync(e => e.Id == id);
         if (enterprise == null)
-            throw new InvalidOperationException("Empresa no encontrada.");
+            throw new KeyNotFoundException($"Empresa con Id '{id}' no encontrada.");
 
         enterprise.Deactivate();
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsByTaxIdAsync(string taxId, Guid? excludeId = null)
+    {
+        var query = _context.Enterprises.Where(e => e.TaxId.Value == taxId);
+        if (excludeId.HasValue)
+        {
+            query = query.Where(e => e.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email, Guid? excludeId = null)
+    {
+        var query = _context.Enterprises.Where(e => e.Email.Value == email);
+        if (excludeId.HasValue)
+        {
+            query = query.Where(e => e.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync();
     }
 }

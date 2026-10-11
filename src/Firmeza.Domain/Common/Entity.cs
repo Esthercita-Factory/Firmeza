@@ -19,4 +19,9 @@ public abstract class Entity
     {
         IsActive = false;
     }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
 }

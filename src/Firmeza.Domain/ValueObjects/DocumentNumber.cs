@@ -8,10 +8,11 @@ public sealed record DocumentNumber(string Value)
             throw new ArgumentException(
                 "El documento es obligatorio.");
 
-        if (value.Length < 5)
+        var trimmed = value.Trim();
+        if (trimmed.Length < 5 || trimmed.Length > 50)
             throw new ArgumentException(
-                "El documento no es válido.");
+                "El documento no es válido (debe tener entre 5 y 50 caracteres).");
 
-        return new DocumentNumber(value);
+        return new DocumentNumber(trimmed);
     }
 }

@@ -1,24 +1,16 @@
-using Firmeza.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using Firmeza.Application;
+using Firmeza.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrar AppDbContext y conectarlo con PostgreSQL
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+// Registrar capas de Clean Architecture (Application e Infrastructure)
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Agregar servicios MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
-// Aplicar migraciones automáticamente al iniciar
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
-}
 
 // Configurar el pipeline HTTP
 if (!app.Environment.IsDevelopment())

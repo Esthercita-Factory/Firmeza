@@ -35,7 +35,7 @@ public class EnterpriseConfiguration : IEntityTypeConfiguration<Enterprise>
                 phone => phone.Value,
                 value => PhoneNumber.Create(value))
             .IsRequired()
-            .HasMaxLength(20);
+            .HasMaxLength(50);
 
         builder.Property(e => e.Email)
             .HasConversion(

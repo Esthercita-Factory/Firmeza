@@ -6,12 +6,13 @@ public sealed record TaxId(string Value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException(
-                "El identificador fiscal es obligatorio.");
+                "El identificador fiscal (NIT/TaxId) es obligatorio.");
 
-        if (value.Length < 8)
+        var trimmed = value.Trim();
+        if (trimmed.Length < 8 || trimmed.Length > 50)
             throw new ArgumentException(
-                "El identificador fiscal no es válido.");
+                "El identificador fiscal no es válido (debe tener entre 8 y 50 caracteres).");
 
-        return new TaxId(value);
+        return new TaxId(trimmed);
     }
 }

@@ -8,10 +8,11 @@ public sealed record Email(string Value)
             throw new ArgumentException(
                 "El email es obligatorio.");
 
-        if (!value.Contains('@'))
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('@') || !trimmed.Contains('.'))
             throw new ArgumentException(
                 "El email no tiene un formato válido.");
 
-        return new Email(value);
+        return new Email(trimmed);
     }
 }

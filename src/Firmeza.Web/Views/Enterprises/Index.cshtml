@@ -1,0 +1,586 @@
+@{
+    ViewData["Title"] = "Gestión de Empresas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="fw-bold mb-1" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <i class="bi bi-buildings"></i> Módulo de Empresas
+        </h2>
+        <p class="text-muted mb-0">Gestión de datos organizacionales, identificadores fiscales y estado de operación.</p>
+    </div>
+    <div id="adminActionButtons">
+        <button class="btn btn-gradient d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalCreateEnterprise">
+            <i class="bi bi-plus-circle-fill"></i> Registrar Empresa
+        </button>
+    </div>
+</div>
+
+<!-- Banner de Estado de Permisos según el Perfil -->
+<div id="roleAlertBanner" class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-3">
+    <i class="bi bi-shield-lock-fill fs-3 text-warning"></i>
+    <div class="flex-grow-1">
+        <span class="fw-bold d-block" id="roleBannerTitle">Perfil Activo: Administrador</span>
+        <small id="roleBannerDesc" class="text-muted">Tienes permisos completos para crear, actualizar datos y aplicar bajas lógicas sobre empresas.</small>
+    </div>
+</div>
+
+<!-- Filtros y Búsqueda -->
+<div class="card card-custom p-3 mb-4">
+    <div class="row g-3 align-items-center">
+        <div class="col-12 col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Buscar por nombre, NIT o correo..." onkeyup="filterEnterprises()">
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <select id="statusFilter" class="form-select" onchange="loadEnterprises(1)">
+                <option value="">Todos los Estados</option>
+                <option value="true" selected>Solo Activas</option>
+                <option value="false">Solo Suspendidas (Baja Lógica)</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <select id="pageSizeSelect" class="form-select" onchange="loadEnterprises(1)">
+                <option value="5">5 por página</option>
+                <option value="10" selected>10 por página</option>
+                <option value="25">25 por página</option>
+            </select>
+        </div>
+        <div class="col-12 col-md-2 text-md-end">
+            <button class="btn btn-light w-100 border" onclick="loadEnterprises(1)" title="Refrescar lista">
+                <i class="bi bi-arrow-clockwise"></i> Recargar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Empresas -->
+<div class="card card-custom overflow-hidden mb-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-uppercase small text-muted">
+                <tr>
+                    <th class="ps-4">Razón Social</th>
+                    <th>Nombre Comercial</th>
+                    <th>NIT / TaxId</th>
+                    <th>Contacto</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th class="text-end pe-4">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="enterprisesTableBody">
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                        Cargando empresas...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="card-footer bg-white border-top d-flex justify-content-between align-items-center flex-wrap gap-2 px-4 py-3">
+        <span class="small text-muted" id="paginationInfo">Mostrando 0 de 0 registros</span>
+        <nav aria-label="Paginación de empresas">
+            <ul class="pagination pagination-sm mb-0" id="paginationControls"></ul>
+        </nav>
+    </div>
+</div>
+
+<!-- MODAL: Crear Empresa -->
+<div class="modal fade" id="modalCreateEnterprise" tabindex="-1" aria-labelledby="modalCreateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background: var(--primary-gradient);">
+                <h5 class="modal-title fw-bold" id="modalCreateLabel"><i class="bi bi-building-add me-2"></i> Registrar Nueva Empresa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formCreateEnterprise" onsubmit="handleCreateEnterprise(event)">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Razón Social <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="createName" required maxlength="150" placeholder="Ej. Soluciones Firmeza S.A.S.">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Nombre Comercial <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="createTradeName" required maxlength="150" placeholder="Ej. Firmeza Tech">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">NIT / TaxId <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="createTaxId" required minlength="8" maxlength="50" placeholder="Ej. 901555444-1">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Tipo de Empresa <span class="text-danger">*</span></label>
+                            <select class="form-select" id="createType" required>
+                                <option value="1">Individual / Persona Natural</option>
+                                <option value="2" selected>Corporación / S.A.</option>
+                                <option value="3">Sociedad Limitada (Ltda / S.A.S.)</option>
+                                <option value="4">Sociedad Colectiva</option>
+                                <option value="5">Sin Ánimo de Lucro</option>
+                                <option value="6">Cooperativa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Correo Corporativo <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="createEmail" required maxlength="100" placeholder="contacto@empresa.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Teléfono de Contacto (Hasta 50 car.) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="createPhone" required minlength="7" maxlength="50" placeholder="Ej. +57 (601) 234-5678 ext 102">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small">Dirección Principal <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="createAddress" required maxlength="250" placeholder="Ej. Av. Principal # 45-67, Edificio Empresarial">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-gradient" id="btnSubmitCreate">
+                        <i class="bi bi-check-circle-fill me-1"></i> Guardar Empresa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Editar Empresa -->
+<div class="modal fade" id="modalEditEnterprise" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="modalEditLabel"><i class="bi bi-pencil-square me-2"></i> Actualizar Datos de Empresa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditEnterprise" onsubmit="handleUpdateEnterprise(event)">
+                <input type="hidden" id="editId">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Razón Social <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editName" required maxlength="150">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Nombre Comercial <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editTradeName" required maxlength="150">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">NIT / TaxId <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editTaxId" required minlength="8" maxlength="50">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Tipo de Empresa <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editType" required>
+                                <option value="1">Individual / Persona Natural</option>
+                                <option value="2">Corporación / S.A.</option>
+                                <option value="3">Sociedad Limitada (Ltda / S.A.S.)</option>
+                                <option value="4">Sociedad Colectiva</option>
+                                <option value="5">Sin Ánimo de Lucro</option>
+                                <option value="6">Cooperativa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Correo Corporativo <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="editEmail" required maxlength="100">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Teléfono (Hasta 50 car.) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editPhone" required minlength="7" maxlength="50">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small">Dirección Principal <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editAddress" required maxlength="250">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitEdit">
+                        <i class="bi bi-save me-1"></i> Actualizar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Detalle de Empresa -->
+<div class="modal fade" id="modalDetailEnterprise" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-bold"><i class="bi bi-info-circle me-2"></i> Perfil Corporativo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-3">
+                    <div class="d-inline-flex p-3 bg-light rounded-circle text-primary mb-2">
+                        <i class="bi bi-building fs-1"></i>
+                    </div>
+                    <h5 id="detailName" class="fw-bold mb-0">Empresa</h5>
+                    <span id="detailTradeName" class="text-muted small">Nombre Comercial</span>
+                </div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">NIT / TaxId:</span>
+                        <strong id="detailTaxId">-</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Tipo:</span>
+                        <strong id="detailType">-</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Correo:</span>
+                        <span id="detailEmail" class="text-primary">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Teléfono:</span>
+                        <span id="detailPhone">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Dirección:</span>
+                        <span id="detailAddress">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Estado Actual:</span>
+                        <span id="detailStatus">-</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Confirmar Suspensión (Baja Lógica) -->
+<div class="modal fade" id="modalSuspendConfirm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h6 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Confirmar Suspensión</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <p class="mb-1">¿Deseas suspender (baja lógica) la empresa?</p>
+                <strong id="suspendEnterpriseName" class="text-danger d-block mb-2">-</strong>
+                <small class="text-muted">La empresa cambiará su estado a inactivo (<code>IsActive = false</code>), preservando los registros históricos.</small>
+            </div>
+            <div class="modal-footer justify-content-center bg-light">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-sm btn-danger fw-bold" id="btnConfirmSuspend" onclick="executeSuspend()">Suspender Registro</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentData = [];
+    let currentPage = 1;
+    let targetSuspendId = null;
+
+    const enterpriseTypes = {
+        1: "Individual",
+        2: "Corporación",
+        3: "S.A.S. / Ltda.",
+        4: "Sociedad Colectiva",
+        5: "Sin Ánimo de Lucro",
+        6: "Cooperativa"
+    };
+
+    function applyRolePermissions() {
+        const role = getProfile();
+        const isAdmin = role === 'Administrator';
+
+        // Actualizar banner
+        const banner = document.getElementById('roleAlertBanner');
+        const title = document.getElementById('roleBannerTitle');
+        const desc = document.getElementById('roleBannerDesc');
+        const createBtn = document.getElementById('adminActionButtons');
+
+        if (isAdmin) {
+            banner.className = 'alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-3';
+            title.innerText = 'Perfil Activo: Administrador';
+            desc.innerText = 'Tienes permisos completos para crear, actualizar datos y aplicar bajas lógicas sobre empresas.';
+            if (createBtn) createBtn.style.display = 'block';
+        } else {
+            banner.className = 'alert alert-info border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-3';
+            title.innerText = 'Perfil Activo: Usuario Corporativo';
+            desc.innerText = 'Modo Consulta: Tienes acceso de solo lectura para inspeccionar las empresas registradas.';
+            if (createBtn) createBtn.style.display = 'none';
+        }
+
+        renderTable();
+    }
+
+    async function loadEnterprises(page = 1) {
+        currentPage = page;
+        const pageSize = document.getElementById('pageSizeSelect').value;
+        const status = document.getElementById('statusFilter').value;
+        
+        let url = `/Enterprises/GetPaged?pageNumber=${page}&pageSize=${pageSize}`;
+        if (status !== "") url += `&onlyActive=${status}`;
+
+        try {
+            const res = await fetch(url);
+            const paged = await res.json();
+            currentData = paged.data || [];
+            
+            document.getElementById('paginationInfo').innerText = 
+                `Mostrando página ${paged.pageNumber} de ${paged.totalPages || 1} (${paged.totalRecords} registros en total)`;
+
+            renderPagination(paged.pageNumber, paged.totalPages);
+            renderTable();
+        } catch (err) {
+            console.error(err);
+            showToast('Error al conectar con la base de datos.', 'danger');
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('enterprisesTableBody');
+        const isAdmin = getProfile() === 'Administrator';
+
+        if (currentData.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block text-secondary mb-2"></i>
+                        No se encontraron registros de empresas con los filtros aplicados.
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        let html = '';
+        currentData.forEach(item => {
+            const statusBadge = item.isActive 
+                ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i>Activo</span>'
+                : '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1"><i class="bi bi-slash-circle-fill me-1"></i>Suspendido</span>';
+
+            const adminActions = isAdmin ? `
+                <button class="btn btn-sm btn-outline-primary" onclick="openEditModal('${item.id}')" title="Editar datos">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="openSuspendModal('${item.id}', '${item.name}')" title="Suspender (Baja Lógica)" ${!item.isActive ? 'disabled' : ''}>
+                    <i class="bi bi-trash"></i>
+                </button>
+            ` : '';
+
+            html += `
+                <tr>
+                    <td class="ps-4 fw-bold text-dark">${item.name}</td>
+                    <td>${item.tradeName}</td>
+                    <td><span class="badge bg-light text-dark border font-monospace">${item.taxId}</span></td>
+                    <td>
+                        <div class="small"><i class="bi bi-envelope text-muted me-1"></i>${item.email}</div>
+                        <div class="small text-muted"><i class="bi bi-telephone text-muted me-1"></i>${item.phone}</div>
+                    </td>
+                    <td><span class="badge bg-secondary-subtle text-secondary">${enterpriseTypes[item.type] || 'General'}</span></td>
+                    <td>${statusBadge}</td>
+                    <td class="text-end pe-4">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="openDetailModal('${item.id}')" title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            ${adminActions}
+                        </div>
+                    </td>
+                </tr>`;
+        });
+
+        tbody.innerHTML = html;
+    }
+
+    function renderPagination(current, total) {
+        const ul = document.getElementById('paginationControls');
+        if (!total || total <= 1) {
+            ul.innerHTML = '';
+            return;
+        }
+
+        let html = `
+            <li class="page-item ${current === 1 ? 'disabled' : ''}">
+                <button class="page-link" onclick="loadEnterprises(${current - 1})">Anterior</button>
+            </li>`;
+
+        for (let i = 1; i <= total; i++) {
+            html += `
+                <li class="page-item ${current === i ? 'active' : ''}">
+                    <button class="page-link" onclick="loadEnterprises(${i})">${i}</button>
+                </li>`;
+        }
+
+        html += `
+            <li class="page-item ${current === total ? 'disabled' : ''}">
+                <button class="page-link" onclick="loadEnterprises(${current + 1})">Siguiente</button>
+            </li>`;
+
+        ul.innerHTML = html;
+    }
+
+    async function handleCreateEnterprise(e) {
+        e.preventDefault();
+        const payload = {
+            name: document.getElementById('createName').value.trim(),
+            tradeName: document.getElementById('createTradeName').value.trim(),
+            taxId: document.getElementById('createTaxId').value.trim(),
+            type: parseInt(document.getElementById('createType').value),
+            email: document.getElementById('createEmail').value.trim(),
+            phone: document.getElementById('createPhone').value.trim(),
+            address: document.getElementById('createAddress').value.trim()
+        };
+
+        try {
+            const res = await fetch('/Enterprises/Create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.status === 409) {
+                const err = await res.json();
+                showToast(err.message || 'Conflicto: Ya existe una empresa con ese NIT o Correo.', 'danger');
+                return;
+            }
+
+            if (!res.ok) {
+                const err = await res.json();
+                showToast(err.message || 'Error de validación al crear la empresa.', 'danger');
+                return;
+            }
+
+            showToast('¡Empresa registrada exitosamente!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modalCreateEnterprise')).hide();
+            document.getElementById('formCreateEnterprise').reset();
+            loadEnterprises(1);
+        } catch (err) {
+            showToast('Error de conexión con el servidor.', 'danger');
+        }
+    }
+
+    async function openEditModal(id) {
+        const item = currentData.find(x => x.id === id);
+        if (!item) return;
+
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editName').value = item.name;
+        document.getElementById('editTradeName').value = item.tradeName;
+        document.getElementById('editTaxId').value = item.taxId;
+        document.getElementById('editType').value = item.type;
+        document.getElementById('editEmail').value = item.email;
+        document.getElementById('editPhone').value = item.phone;
+        document.getElementById('editAddress').value = item.address;
+
+        new bootstrap.Modal(document.getElementById('modalEditEnterprise')).show();
+    }
+
+    async function handleUpdateEnterprise(e) {
+        e.preventDefault();
+        const id = document.getElementById('editId').value;
+        const payload = {
+            name: document.getElementById('editName').value.trim(),
+            tradeName: document.getElementById('editTradeName').value.trim(),
+            taxId: document.getElementById('editTaxId').value.trim(),
+            type: parseInt(document.getElementById('editType').value),
+            email: document.getElementById('editEmail').value.trim(),
+            phone: document.getElementById('editPhone').value.trim(),
+            address: document.getElementById('editAddress').value.trim()
+        };
+
+        try {
+            const res = await fetch(`/Enterprises/Update?id=${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.status === 409) {
+                const err = await res.json();
+                showToast(err.message || 'Conflicto: El NIT o Correo colisiona con otra empresa registrada.', 'danger');
+                return;
+            }
+
+            if (!res.ok) {
+                const err = await res.json();
+                showToast(err.message || 'Error al actualizar la empresa.', 'danger');
+                return;
+            }
+
+            showToast('Empresa actualizada correctamente (200 OK).', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modalEditEnterprise')).hide();
+            loadEnterprises(currentPage);
+        } catch (err) {
+            showToast('Error de conexión con el servidor.', 'danger');
+        }
+    }
+
+    function openDetailModal(id) {
+        const item = currentData.find(x => x.id === id);
+        if (!item) return;
+
+        document.getElementById('detailName').innerText = item.name;
+        document.getElementById('detailTradeName').innerText = item.tradeName;
+        document.getElementById('detailTaxId').innerText = item.taxId;
+        document.getElementById('detailType').innerText = enterpriseTypes[item.type] || 'General';
+        document.getElementById('detailEmail').innerText = item.email;
+        document.getElementById('detailPhone').innerText = item.phone;
+        document.getElementById('detailAddress').innerText = item.address;
+        document.getElementById('detailStatus').innerHTML = item.isActive 
+            ? '<span class="badge bg-success">Activo</span>' 
+            : '<span class="badge bg-danger">Suspendido</span>';
+
+        new bootstrap.Modal(document.getElementById('modalDetailEnterprise')).show();
+    }
+
+    function openSuspendModal(id, name) {
+        targetSuspendId = id;
+        document.getElementById('suspendEnterpriseName').innerText = name;
+        new bootstrap.Modal(document.getElementById('modalSuspendConfirm')).show();
+    }
+
+    async function executeSuspend() {
+        if (!targetSuspendId) return;
+
+        try {
+            const res = await fetch(`/Enterprises/Delete?id=${targetSuspendId}`, { method: 'DELETE' });
+            if (!res.ok) {
+                showToast('Error al suspender la empresa.', 'danger');
+                return;
+            }
+
+            showToast('Empresa suspendida exitosamente (IsActive = false).', 'warning');
+            bootstrap.Modal.getInstance(document.getElementById('modalSuspendConfirm')).hide();
+            targetSuspendId = null;
+            loadEnterprises(currentPage);
+        } catch (err) {
+            showToast('Error al procesar la baja lógica.', 'danger');
+        }
+    }
+
+    function filterEnterprises() {
+        const text = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#enterprisesTableBody tr');
+        rows.forEach(r => {
+            const content = r.innerText.toLowerCase();
+            r.style.display = content.includes(text) ? '' : 'none';
+        });
+    }
+
+    // Escuchar cambios de perfil en tiempo real
+    window.addEventListener('firmezaProfileChanged', applyRolePermissions);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        applyRolePermissions();
+        loadEnterprises(1);
+    });
+</script>
+}

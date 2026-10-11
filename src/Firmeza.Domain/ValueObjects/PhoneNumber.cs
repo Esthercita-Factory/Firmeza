@@ -8,10 +8,11 @@ public sealed record PhoneNumber(string Value)
             throw new ArgumentException(
                 "El teléfono es obligatorio.");
 
-        if (value.Length < 7)
+        var trimmed = value.Trim();
+        if (trimmed.Length < 7 || trimmed.Length > 50)
             throw new ArgumentException(
-                "El teléfono no es válido.");
+                "El teléfono no es válido (debe tener entre 7 y 50 caracteres).");
 
-        return new PhoneNumber(value);
+        return new PhoneNumber(trimmed);
     }
 }

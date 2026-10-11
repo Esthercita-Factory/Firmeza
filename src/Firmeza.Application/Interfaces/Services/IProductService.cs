@@ -4,9 +4,10 @@ namespace Firmeza.Application.Interfaces.Services;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductDto>> GetAllAsync();
-    Task<ProductDto?> GetByIdAsync(Guid id);
-    Task<ProductDto> CreateAsync(ProductDto productDto);
-    Task<ProductDto> UpdateAsync(Guid id, ProductDto productDto);
-    Task DeleteAsync(Guid id);
+    Task<IEnumerable<ProductResponseDto>> GetAllAsync();
+    Task<IEnumerable<ProductResponseDto>> GetAllPagedAsync(int pageNumber, int pageSize);
+    Task<ProductResponseDto?> GetByIdAsync(Guid id);
+    Task<ProductResponseDto> CreateAsync(CreateProductDto dto);
+    Task<ProductResponseDto> UpdateAsync(Guid id, UpdateProductDto dto);
+    Task DeleteLogicalAsync(Guid id);
 }

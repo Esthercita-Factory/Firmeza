@@ -1,59 +1,255 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Firmeza.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Firmeza</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Firmeza.Web.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .navbar-custom {
+            background: #ffffff;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            padding: 0.85rem 1.5rem;
+        }
+
+        .navbar-brand-custom {
+            font-weight: 800;
+            font-size: 1.4rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link-custom {
+            font-weight: 500;
+            color: #475569 !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: #667eea !important;
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .profile-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-user {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .card-custom {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-custom mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Firmeza.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand navbar-brand-custom d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-shield-check text-primary fs-3"></i>
+                    <span>FIRMEZA</span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-area="" asp-controller="Home"
-                               asp-action="Index"
-                               >Home</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Login"
-                               asp-action="Index">
-                                Login
+                            <a class="nav-link nav-link-custom" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house me-1"></i> Inicio
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" asp-controller="Enterprises" asp-action="Index">
+                                <i class="bi bi-building me-1"></i> Empresas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" asp-controller="Clients" asp-action="Index">
+                                <i class="bi bi-people me-1"></i> Clientes
+                            </a>
+                        </li>
                     </ul>
+
+                    <!-- Sección de Perfil y Sesión -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Selector de Perfil Rápido -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="currentProfileBadge" class="profile-badge badge-admin">
+                                    <i class="bi bi-shield-lock-fill"></i> <span id="profileName">Administrador</span>
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+                                <li><h6 class="dropdown-header text-uppercase small">Cambiar Perfil Activo</h6></li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setProfile('Administrator')">
+                                        <i class="bi bi-shield-lock-fill text-warning"></i>
+                                        <div>
+                                            <div class="fw-bold">Administrador</div>
+                                            <small class="text-muted">Acceso total (Crear, Editar, Suspender)</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setProfile('CorporateUser')">
+                                        <i class="bi bi-person-check-fill text-success"></i>
+                                        <div>
+                                            <div class="fw-bold">Usuario Corporativo</div>
+                                            <small class="text-muted">Solo consulta y lectura de perfiles</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger d-flex align-items-center gap-2" asp-controller="Login" asp-action="Index">
+                                        <i class="bi bi-box-arrow-right"></i> Pantalla de Login
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container-fluid px-4">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Firmeza.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer text-muted py-3 border-top mt-auto bg-white">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>&copy; 2026 - <strong>Firmeza</strong> - Gestión Organizacional & Comercial</span>
+            <div class="small">
+                <span>Perfil en uso: <strong id="footerProfileName" class="text-primary">Administrador</strong></span>
+            </div>
         </div>
     </footer>
+
+    <!-- Contenedor para Notificaciones Toast Globales -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="appToast" class="toast align-items-center border-0 text-white" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Operación realizada con éxito.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // Manejo global del perfil (Administrator o CorporateUser)
+        function getProfile() {
+            return localStorage.getItem('firmeza_role') || 'Administrator';
+        }
+
+        function setProfile(role) {
+            localStorage.setItem('firmeza_role', role);
+            updateProfileUI();
+            // Disparar evento para que las páginas activas reaccionen
+            window.dispatchEvent(new CustomEvent('firmezaProfileChanged', { detail: { role: role } }));
+            showToast('Perfil cambiado a: ' + (role === 'Administrator' ? 'Administrador' : 'Usuario Corporativo'), 'success');
+        }
+
+        function updateProfileUI() {
+            const role = getProfile();
+            const badge = document.getElementById('currentProfileBadge');
+            const name = document.getElementById('profileName');
+            const footerName = document.getElementById('footerProfileName');
+
+            if (role === 'Administrator') {
+                if (badge) {
+                    badge.className = 'profile-badge badge-admin';
+                    badge.innerHTML = '<i class="bi bi-shield-lock-fill"></i> <span>Administrador</span>';
+                }
+                if (footerName) footerName.innerText = 'Administrador (Acceso Total)';
+            } else {
+                if (badge) {
+                    badge.className = 'profile-badge badge-user';
+                    badge.innerHTML = '<i class="bi bi-person-check-fill"></i> <span>Usuario Corporativo</span>';
+                }
+                if (footerName) footerName.innerText = 'Usuario Corporativo (Consulta)';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('appToast');
+            const toastMessage = document.getElementById('toastMessage');
+            if (!toastEl || !toastMessage) return;
+
+            toastMessage.innerText = message;
+            toastEl.className = 'toast align-items-center border-0 text-white ' + 
+                (type === 'success' ? 'bg-success' : type === 'danger' ? 'bg-danger' : 'bg-warning');
+            
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
+        }
+
+        document.addEventListener('DOMContentLoaded', updateProfileUI);
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
