@@ -1,0 +1,52 @@
+services:
+  # ====================================================================
+  # Backend API (.NET 10)
+  # ====================================================================
+  api:
+    build:
+      context: .
+      dockerfile: src/Firmeza.Api/Dockerfile
+    container_name: firmeza-api
+    ports:
+      - "${API_PORT:-5134}:5134"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Inyecta la cadena de conexión apuntando a la IP de la otra máquina configurada en .env
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Port=${DB_PORT:-5432};Database=${DB_NAME:-firmeza};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-Lastre098707}
+    restart: unless-stopped
+
+  # ====================================================================
+  # Frontend & Web Host (Angular + ASP.NET Core)
+  # ====================================================================
+  web:
+    build:
+      context: .
+      dockerfile: src/Firmeza.Web/Dockerfile
+    container_name: firmeza-web
+    ports:
+      - "${WEB_PORT:-5099}:5099"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # ====================================================================
+  # (Opcional) Base de Datos PostgreSQL local en Docker
+  # Solo se inicia si ejecutas: docker compose --profile local-db up
+  # ====================================================================
+  postgres-local:
+    image: postgres:16-alpine
+    container_name: firmeza-postgres-local
+    profiles: ["local-db"]
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-firmeza}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Lastre098707}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

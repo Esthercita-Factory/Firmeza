@@ -1,34 +1,19 @@
-using Firmeza.Application;
-using Firmeza.Infrastructure;
-
 var builder = WebApplication.CreateBuilder(args);
-
-// Registrar capas de Clean Architecture (Application e Infrastructure)
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-
-// Agregar servicios MVC
-builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configurar el pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
 
-app.UseAuthorization();
+// Servir los archivos estáticos de la aplicación Angular SPA (index.html, bundles JS/CSS)
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+// Enrutamiento SPA: Cualquier ruta que no sea un archivo estático redirige a index.html (Angular Router)
+app.MapFallbackToFile("index.html");
 
 app.Run();

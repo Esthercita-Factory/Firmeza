@@ -1,0 +1,402 @@
+/* Global Design Tokens & Typography for Firmeza Angular ClientApp */
+
+:root {
+  --fm-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fm-font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  --fm-primary: #4f46e5;
+  --fm-primary-dark: #3730a3;
+  --fm-primary-light: #eef2ff;
+  --fm-primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --fm-emerald-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --fm-amber-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --fm-rose-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+  --fm-bg: #f8fafc;
+  --fm-card-bg: #ffffff;
+  --fm-border: #e2e8f0;
+  
+  --fm-text-main: #0f172a;
+  --fm-text-muted: #64748b;
+
+  --fm-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --fm-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --fm-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --fm-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+body {
+  font-family: var(--fm-font-sans);
+  background-color: var(--fm-bg);
+  color: var(--fm-text-main);
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+}
+
+code, kbd, samp, pre, .font-monospace {
+  font-family: var(--fm-font-mono) !important;
+}
+
+/* NAVBAR */
+.navbar-custom {
+  background: #ffffff;
+  border-bottom: 1px solid var(--fm-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  padding: 0.75rem 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.brand-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--fm-primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+.brand-text-title {
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.brand-text-subtitle {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fm-primary);
+}
+
+.nav-link-custom {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--fm-text-muted) !important;
+  padding: 0.55rem 1rem !important;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+  color: var(--fm-primary) !important;
+  background: var(--fm-primary-light);
+  font-weight: 700;
+}
+
+/* PERFIL Y ROLES */
+.profile-pill {
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.profile-pill-admin {
+  background: var(--fm-amber-gradient);
+  color: white;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+}
+
+.profile-pill-user {
+  background: var(--fm-emerald-gradient);
+  color: white;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+}
+
+/* CARDS */
+.card-firmeza {
+  background: var(--fm-card-bg);
+  border: 1px solid var(--fm-border);
+  border-radius: 16px;
+  box-shadow: var(--fm-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-firmeza-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fm-shadow-md);
+}
+
+/* KPI STATS WIDGETS */
+.stat-card {
+  background: #ffffff;
+  border: 1px solid var(--fm-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: var(--fm-shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.stat-icon-primary {
+  background: rgba(79, 70, 229, 0.12);
+  color: var(--fm-primary);
+}
+
+.stat-icon-success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.stat-icon-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+.stat-icon-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+/* AVATAR MONOGRAMS */
+.monogram-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.monogram-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  font-size: 1.5rem;
+}
+
+.avatar-color-1 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+.avatar-color-2 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+.avatar-color-3 { background: linear-gradient(135deg, #10b981, #059669); }
+.avatar-color-4 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.avatar-color-5 { background: linear-gradient(135deg, #ec4899, #be185d); }
+.avatar-color-6 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+/* BADGES DE ESTADO Y NEGOCIO */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+}
+
+.status-pill-active {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.status-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+  animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.status-pill-suspended {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.code-pill {
+  font-family: var(--fm-font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.code-copy-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: color 0.15s ease;
+}
+
+.code-copy-btn:hover {
+  color: var(--fm-primary);
+}
+
+/* BOTONES */
+.btn-firmeza-primary {
+  background: var(--fm-primary-gradient);
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.6rem 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-firmeza-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.42);
+  color: white;
+}
+
+.btn-firmeza-secondary {
+  background: #ffffff;
+  color: var(--fm-text-main);
+  border: 1px solid var(--fm-border);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.6rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-firmeza-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+/* TABLAS */
+.table-firmeza {
+  margin-bottom: 0;
+}
+
+.table-firmeza thead th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--fm-border);
+}
+
+.table-firmeza tbody td {
+  padding: 1.1rem 1.25rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.92rem;
+}
+
+.table-firmeza tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* FORMULARIOS */
+.form-label-firmeza {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+.form-control-firmeza, .form-select-firmeza {
+  border-radius: 10px;
+  border: 1px solid var(--fm-border);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.form-control-firmeza:focus, .form-select-firmeza:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  outline: none;
+}
+
+/* MODALES */
+.modal-content-firmeza {
+  border-radius: 18px;
+  border: none;
+  box-shadow: var(--fm-shadow-lg);
+  overflow: hidden;
+}
+
+.modal-header-gradient {
+  background: var(--fm-primary-gradient);
+  color: white;
+  padding: 1.25rem 1.75rem;
+}
+
+.modal-header-danger {
+  background: var(--fm-rose-gradient);
+  color: white;
+  padding: 1.25rem 1.75rem;
+}

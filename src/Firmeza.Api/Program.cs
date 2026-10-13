@@ -2,7 +2,9 @@ using System.Text;
 using Firmeza.Api.Services;
 using Firmeza.Application;
 using Firmeza.Infrastructure;
+using Firmeza.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
@@ -79,5 +81,23 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Aplicar migraciones pendientes automáticamente al iniciar
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var db = services.GetRequiredService<AppDbContext>();
+        logger.LogInformation("Verificando y aplicando migraciones de base de datos...");
+        db.Database.Migrate();
+        logger.LogInformation("Base de datos sincronizada con éxito.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Ocurrió un error al intentar aplicar las migraciones a la base de datos.");
+    }
+}
 
 app.Run();
