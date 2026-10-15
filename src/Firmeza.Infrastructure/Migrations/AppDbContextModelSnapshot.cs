@@ -33,15 +33,15 @@ namespace Firmeza.Infrastructure.Migrations
 
                     b.Property<string>("Document")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
-                    b.Property<Guid?>("EnterpriseId")
+                    b.Property<Guid>("EnterpriseId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
@@ -56,21 +56,18 @@ namespace Firmeza.Infrastructure.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Document")
-                        .IsUnique()
                         .HasDatabaseName("IX_Clients_Document");
 
                     b.HasIndex("Email")
                         .HasDatabaseName("IX_Clients_Email");
 
-                    b.HasIndex("EnterpriseId");
-
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Firmeza.Domain.Entities.Enterprise", b =>
@@ -101,8 +98,8 @@ namespace Firmeza.Infrastructure.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("TaxId")
                         .IsRequired()
@@ -226,16 +223,6 @@ namespace Firmeza.Infrastructure.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("SaleDetails");
-                });
-
-            modelBuilder.Entity("Firmeza.Domain.Entities.Client", b =>
-                {
-                    b.HasOne("Firmeza.Domain.Entities.Enterprise", "Enterprise")
-                        .WithMany()
-                        .HasForeignKey("EnterpriseId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Enterprise");
                 });
 
             modelBuilder.Entity("Firmeza.Domain.Entities.Sale", b =>

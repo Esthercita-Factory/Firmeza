@@ -5,6 +5,11 @@
 
 # dotenv files
 .env
+.env.local
+.env.*.local
+
+# Docker volumes
+pgdata/
 
 # User-specific files
 *.rsuser

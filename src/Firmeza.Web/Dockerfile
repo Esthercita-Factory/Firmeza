@@ -1,5 +1,5 @@
 # Etapa 1: Compilar Angular Frontend
-FROM node:20-alpine AS angular-build
+FROM node:22-alpine AS angular-build
 WORKDIR /app/ClientApp
 
 COPY src/Firmeza.Web/ClientApp/package*.json ./
