@@ -1,4 +1,5 @@
 name: firmeza-final
+
 services:
   # ====================================================================
   # Backend API (.NET 10)
@@ -8,10 +9,10 @@ services:
       context: .
       dockerfile: src/Firmeza.Api/Dockerfile
     ports:
-      - "${API_PORT:-8081}:5134"
+      - "${API_PORT:-5134}:5134"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=${DB_HOST:-postgres-local};Port=${DB_PORT:-5432};Database=${DB_NAME:-firmeza};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-Lastre098707}
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST:-postgres-local};Port=${DB_PORT:-5432};Database=${DB_NAME:-firmeza};Username=${DB_USER:-postgres};Password=${DB_PASSWORD}
     restart: unless-stopped
 
   # ====================================================================
@@ -41,7 +42,7 @@ services:
     environment:
       - POSTGRES_DB=${DB_NAME:-firmeza}
       - POSTGRES_USER=${DB_USER:-postgres}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-Lastre098707}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-firmeza}"]
       interval: 5s
