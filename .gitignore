@@ -488,4 +488,52 @@ $RECYCLE.BIN/
 
 .env
 .env.save*
-*.env
+*.env# ==========================================
+     # .NET / C# / Visual Studio / Rider
+     # ==========================================
+     [Oo]bj/
+     [Bb]in/
+     *.suo
+     *.user
+     *.userosscache
+     *.sln.docstates
+     .vs/
+     .idea/
+     
+     # ==========================================
+     # Entornos, Credenciales y Archivos Secretos
+     # ==========================================
+     .env
+     .env.*
+     !.env.example
+     *.pem
+     *.key
+     *.pfx
+     
+     # Configuración local de appsettings que contenga secretos (opcional)
+     **/appsettings.Development.json
+     **/appsettings.Local.json
+     
+     # ==========================================
+     # Node.js / Angular
+     # ==========================================
+     node_modules/
+     dist/
+     ssr-output/
+     .angular/
+     *.log
+     npm-debug.log*
+     
+     # ==========================================
+     # Docker & Volúmenes Locales
+     # ==========================================
+     docker-compose.override.yml
+     .docker/
+     
+     # ==========================================
+     # Sistema Operativo y Temporales
+     # ==========================================
+     .DS_Store
+     Thumbs.db
+     *.bak
+     *.tmp
