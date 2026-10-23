@@ -2,7 +2,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copiar archivos de proyecto para restaurar dependencias
-COPY Firmeza.slnx ./
 COPY src/Firmeza.Domain/Firmeza.Domain.csproj src/Firmeza.Domain/
 COPY src/Firmeza.Application/Firmeza.Application.csproj src/Firmeza.Application/
 COPY src/Firmeza.Infrastructure/Firmeza.Infrastructure.csproj src/Firmeza.Infrastructure/

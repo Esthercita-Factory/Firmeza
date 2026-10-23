@@ -16,7 +16,7 @@ COPY src/Firmeza.Web/Firmeza.Web.csproj src/Firmeza.Web/
 RUN dotnet restore src/Firmeza.Web/Firmeza.Web.csproj
 
 COPY src/Firmeza.Web/ src/Firmeza.Web/
-# Reemplazar/asegurar wwwroot con los archivos finales generados por Angular
+# Copiar los archivos generados por Angular a wwwroot del proyecto Web
 COPY --from=angular-build /app/wwwroot/ /app/src/Firmeza.Web/wwwroot/
 
 RUN dotnet publish src/Firmeza.Web/Firmeza.Web.csproj -c Release -o /app/publish /p:UseAppHost=false

@@ -1,5 +1,6 @@
 using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Domain.Entities;
+using Firmeza.Domain.ValueObjects; // Asegúrate de importar el namespace de tus Value Objects
 using Firmeza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,7 +80,11 @@ public class EnterpriseRepository : IEnterpriseRepository
 
     public async Task<bool> ExistsByTaxIdAsync(string taxId, Guid? excludeId = null)
     {
-        var query = _context.Enterprises.Where(e => e.TaxId.Value == taxId);
+        // Instanciamos el Value Object en memoria (ajusta a 'new TaxId(taxId)' si usas constructor directo)
+        var taxIdObj = TaxId.Create(taxId); 
+
+        var query = _context.Enterprises.Where(e => e.TaxId == taxIdObj);
+        
         if (excludeId.HasValue)
         {
             query = query.Where(e => e.Id != excludeId.Value);
@@ -90,7 +95,11 @@ public class EnterpriseRepository : IEnterpriseRepository
 
     public async Task<bool> ExistsByEmailAsync(string email, Guid? excludeId = null)
     {
-        var query = _context.Enterprises.Where(e => e.Email.Value == email);
+        // Instanciamos el Value Object de correo en memoria
+        var emailObj = Email.Create(email); // O 'new Email(email)' según tu implementación
+
+        var query = _context.Enterprises.Where(e => e.Email == emailObj);
+        
         if (excludeId.HasValue)
         {
             query = query.Where(e => e.Id != excludeId.Value);

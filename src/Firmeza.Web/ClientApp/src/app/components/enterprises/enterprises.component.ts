@@ -16,12 +16,6 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
       <!-- Encabezado -->
       <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
-          <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 fw-bold" style="font-size: 0.72rem;">
-              MÓDULO ORGANIZACIONAL (SPA)
-            </span>
-            <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.72rem;">REST: /api/enterprises</span>
-          </div>
           <h2 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.02em;">
             Directorio y Registro de Empresas
           </h2>
@@ -42,25 +36,6 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
         </div>
       </div>
 
-      <!-- Banner de Permisos según Perfil -->
-      <div class="alert border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-4"
-           [style.background]="authService.isAdmin() ? '#fffbeb' : '#ecfdf5'"
-           [style.borderLeft]="authService.isAdmin() ? '4px solid #f59e0b !important' : '4px solid #10b981 !important'">
-        <div class="p-2 rounded-3 text-dark flex-shrink-0" [ngClass]="authService.isAdmin() ? 'bg-warning' : 'bg-success text-white'">
-          <i class="bi" [ngClass]="authService.isAdmin() ? 'bi-shield-lock-fill' : 'bi-person-check-fill'"></i>
-        </div>
-        <div class="flex-grow-1">
-          <div class="d-flex align-items-center gap-2">
-            <span class="fw-bold text-dark">Perfil Activo: {{ authService.role() }}</span>
-            <span class="badge" [ngClass]="authService.isAdmin() ? 'bg-warning text-dark' : 'bg-success text-white'">
-              {{ authService.isAdmin() ? 'Acceso Total (Crear, Editar, Suspender)' : 'Solo Lectura (Auditoría)' }}
-            </span>
-          </div>
-          <small class="text-muted">
-            {{ authService.isAdmin() ? 'Permisos totales para gestionar empresas bajo el principio de baja lógica.' : 'Modo de consulta habilitado para inspeccionar registros corporativos sin capacidad de alteración destructiva.' }}
-          </small>
-        </div>
-      </div>
 
       <!-- Tarjetas de Métricas KPI -->
       <div class="row g-3 mb-4">
@@ -176,7 +151,7 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
                 <tr>
                   <td colspan="6" class="text-center py-5 text-muted">
                     <div class="spinner-border text-primary spinner-border-sm me-2"></div>
-                    Consultando Firmeza.Api...
+                    Cargando...
                   </td>
                 </tr>
               } @else if (filteredEnterprises().length === 0) {
@@ -280,7 +255,7 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
             <div class="modal-header modal-header-gradient">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-building-add fs-4"></i>
-                <h5 class="modal-title fw-bold mb-0">Registrar Nueva Empresa (API REST)</h5>
+                <h5 class="modal-title fw-bold mb-0">Registrar Nueva Empresa</h5>
               </div>
               <button type="button" class="btn-close btn-close-white" (click)="showCreateModal.set(false)"></button>
             </div>
@@ -326,7 +301,7 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
               </div>
               <div class="modal-footer bg-light px-4 py-3">
                 <button type="button" class="btn btn-secondary rounded-3" (click)="showCreateModal.set(false)">Cancelar</button>
-                <button type="submit" class="btn btn-firmeza-primary">Guardar en Firmeza.Api</button>
+                <button type="submit" class="btn btn-firmeza-primary">Guardar</button>
               </div>
             </form>
           </div>
@@ -340,7 +315,7 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content modal-content-firmeza">
             <div class="modal-header bg-dark text-white p-3 px-4">
-              <h5 class="modal-title fw-bold mb-0">Actualizar Datos de Empresa (PUT /api/enterprises/{{ selectedEnterprise.id }})</h5>
+              <h5 class="modal-title fw-bold mb-0">Actualizar Datos de Empresa</h5>
               <button type="button" class="btn-close btn-close-white" (click)="showEditModal.set(false)"></button>
             </div>
             <form (ngSubmit)="handleUpdate()">
@@ -469,18 +444,18 @@ import { EnterpriseDto, CreateEnterpriseDto, UpdateEnterpriseDto } from '../../m
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content modal-content-firmeza">
             <div class="modal-header modal-header-danger">
-              <h5 class="modal-title fw-bold mb-0">Suspender Empresa (Baja Lógica)</h5>
+              <h5 class="modal-title fw-bold mb-0">Suspender Empresa</h5>
               <button type="button" class="btn-close btn-close-white" (click)="showSuspendModal.set(false)"></button>
             </div>
             <div class="modal-body text-center p-4">
               <div class="p-3 bg-danger-subtle text-danger rounded-circle d-inline-flex mb-3">
                 <i class="bi bi-archive fs-1"></i>
               </div>
-              <h5 class="fw-bold mb-2">¿Confirmas la suspensión en Firmeza.Api?</h5>
+              <h5 class="fw-bold mb-2">¿Confirmas la suspensión?</h5>
               <strong class="text-danger fs-5 d-block mb-3">{{ selectedEnterprise.name }}</strong>
               <div class="alert alert-light border text-start small text-muted mb-0">
                 <i class="bi bi-info-circle text-primary me-1"></i>
-                Se ejecutará <code>DELETE /api/enterprises/{{ selectedEnterprise.id }}</code> que establece <code>IsActive = false</code> sin eliminar físicamente registros históricos.
+                Esta acción establecerá la empresa como suspendida sin eliminar los registros históricos.
               </div>
             </div>
             <div class="modal-footer bg-light justify-content-between px-4 py-3">

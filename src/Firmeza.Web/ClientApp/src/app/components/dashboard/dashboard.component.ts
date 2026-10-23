@@ -12,20 +12,15 @@ import { ClientService } from '../../services/client.service';
   template: `
     <div class="container-fluid px-lg-4 py-4">
       <!-- Hero Banner -->
-      <div class="card card-firmeza border-0 p-4 p-lg-5 mb-4 position-relative overflow-hidden" 
+      <div class="card card-firmeza border-0 p-4 p-lg-5 mb-4 position-relative overflow-hidden"
            style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%); color: white;">
         <div class="row align-items-center position-relative" style="z-index: 2;">
           <div class="col-lg-8">
-            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" 
-                 style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.18);">
-              <i class="bi bi-shield-check text-warning"></i>
-              <span class="small fw-semibold text-white-50" style="letter-spacing: 0.05em;">SPA ANGULAR • FIRMEZA.API CONSUMER</span>
-            </div>
             <h1 class="fw-bold mb-2 display-6 text-white" style="letter-spacing: -0.03em;">
               Gestión Empresarial y Comercial
             </h1>
             <p class="text-white-50 fs-6 mb-4 col-xl-10 lead" style="font-weight: 400;">
-              Plataforma Single-Page Application (SPA) construida en Angular consumiendo directamente los endpoints protegidos con JWT de Firmeza.Api.
+              Plataforma integral para la administración de empresas y clientes con control de seguridad y seguimiento en tiempo real.
             </p>
             <div class="d-flex flex-wrap gap-2">
               <a routerLink="/enterprises" class="btn btn-firmeza-primary">
@@ -37,7 +32,7 @@ import { ClientService } from '../../services/client.service';
             </div>
           </div>
           <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-            <div class="p-3 rounded-4 d-inline-block text-start" 
+            <div class="p-3 rounded-4 d-inline-block text-start"
                  style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); min-width: 250px;">
               <div class="small text-white-50 mb-1">Perfil Activo en Sesión:</div>
               <div class="d-flex align-items-center gap-2 mb-2">
@@ -81,32 +76,6 @@ import { ClientService } from '../../services/client.service';
             </div>
           </div>
         </div>
-
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon stat-icon-warning">
-              <i class="bi bi-shield-check"></i>
-            </div>
-            <div>
-              <div class="stat-label">Seguridad API</div>
-              <div class="stat-value fs-4 text-warning">JWT Bearer</div>
-              <div class="small text-muted">Endpoints protegidos</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon stat-icon-danger">
-              <i class="bi bi-diagram-3-fill"></i>
-            </div>
-            <div>
-              <div class="stat-label">Arquitectura</div>
-              <div class="stat-value fs-4 text-dark">Clean DDD</div>
-              <div class="small text-muted">API REST + Angular SPA</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Tarjetas de Módulos Operativos -->
@@ -123,7 +92,7 @@ import { ClientService } from '../../services/client.service';
               </div>
             </div>
             <p class="text-muted small mb-4 flex-grow-1">
-              Consume el endpoint REST <code>/api/enterprises</code>. Permite crear empresas, consultar por ID, actualizar datos y aplicar baja lógica (<code>IsActive = false</code>).
+              Gestión completa de empresas: registro, consulta, actualización de datos y control de estado activo/suspendido.
             </p>
             <a routerLink="/enterprises" class="btn btn-firmeza-secondary w-100 justify-content-center">
               <span>Ir a Empresas</span> <i class="bi bi-arrow-right"></i>
@@ -143,7 +112,7 @@ import { ClientService } from '../../services/client.service';
               </div>
             </div>
             <p class="text-muted small mb-4 flex-grow-1">
-              Consume el endpoint REST <code>/api/clients</code>. Valida la unicidad del documento y correo y exige la vinculación mandatoria a una empresa existente.
+              Directorio de clientes con validación de unicidad de documentos y vinculación obligatoria a empresas registradas.
             </p>
             <a routerLink="/clients" class="btn btn-firmeza-secondary w-100 justify-content-center">
               <span>Ir a Clientes</span> <i class="bi bi-arrow-right"></i>
